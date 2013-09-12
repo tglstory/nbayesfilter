@@ -3,6 +3,7 @@
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import BernoulliNB
+import sys
 
 with open("correct.txt") as fp:
     correct = fp.readlines()
@@ -21,4 +22,12 @@ training_data = bigram_vectorizer.fit_transform(total)
 
 bnb = BernoulliNB()
 bnb.fit(training_data, target)
+
+for line in sys.stdin:
+    line = line.rstrip()
+    candidate = CountVectorizer.transform(bigram_vectorizer, [unicode(line)])
+    if (candidate.nonzero() == 0):
+        print "N\t"+line
+    if (bnb.predict(candidate)[0] == 0):
+        print "E\t"+line
 
